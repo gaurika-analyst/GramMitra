@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gram Mitra – AI Guided Walkthrough</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4ede6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 15px;
+  text-align: center;
+}
+
+h1 {
+  color: #5a341f;
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.lang-grid button {
+  padding: 16px;
+  font-size: 16px;
+  border-radius: 14px;
+  border: none;
+  background: #c46a3a;
+  color: white;
+  cursor: pointer;
+}
+
+.viewer {
+  margin-top: 25px;
+  height: 520px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+  display: none;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.caption {
+  margin-top: 15px;
+  font-size: 20px;
+  color: #3e2416;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>🎥 Gram Mitra – AI App Explanation</h1>
+
+  <!-- Language Selection -->
+  <div id="langScreen">
+    <h2>Select your language</h2>
+    <div class="lang-grid">
+      <button onclick="start('en')">English</button>
+      <button onclick="start('hi')">Hindi</button>
+      <button onclick="start('te')">Telugu</button>
+      <button onclick="start('ml')">Malayalam</button>
+      <button onclick="start('bn')">Bengali</button>
+    </div>
+  </div>
+
+  <!-- App Viewer -->
+  <div class="viewer" id="viewer">
+    <iframe id="frame"></iframe>
+  </div>
+
+  <div class="caption" id="caption"></div>
+</div>
+
+<script>
+const steps = [
+  { page: "index.html", key: 0 },
+  { page: "login.html", key: 1 },
+  { page: "signup.html", key: 2 },
+  { page: "dashboard.html", key: 3 },
+  { page: "dashboard.html", key: 4 }
+];
+
+const text = {
+  en: [
+    "Welcome to Gram Mitra, a digital platform empowering rural artisans.",
+    "Users can login securely to access the application.",
+    "New users can sign up easily using the registration page.",
+    "Buyers get a dashboard to explore products, chat, and make payments.",
+    "Sellers manage products, orders, training, reviews, NGO support and finances."
+  ],
+  hi: [
+    "ग्राम मित्र में आपका स्वागत है, जो ग्रामीण कारीगरों को सशक्त बनाता है।",
+    "यूज़र सुरक्षित रूप से लॉगिन कर सकते हैं।",
+    "नए यूज़र आसानी से साइन अप कर सकते हैं।",
+    "खरीदार डैशबोर्ड से प्रोडक्ट, चैट और भुगतान कर सकते हैं।",
+    "विक्रेता उत्पाद, ऑर्डर, ट्रेनिंग, रिव्यू और NGO सहयोग संभालते हैं।"
+  ],
+  te: [
+    "గ్రామ్ మిత్రకు స్వాగతం.",
+    "వినియోగదారులు సురక్షితంగా లాగిన్ అవ్వచ్చు.",
+    "కొత్త వినియోగదారులు సైన్ అప్ చేయవచ్చు.",
+    "కొనుగోలుదారుల డ్యాష్‌బోర్డ్.",
+    "అమ్మకందారుల పూర్తి నియంత్రణ డ్యాష్‌బోర్డ్."
+  ],
+  ml: [
+    "ഗ്രാം മിത്രയിലേക്ക് സ്വാഗതം.",
+    "ഉപയോക്താക്കൾ സുരക്ഷിതമായി ലോഗിൻ ചെയ്യാം.",
+    "പുതിയ ഉപയോക്താക്കൾ സൈൻ അപ്പ് ചെയ്യാം.",
+    "വാങ്ങുന്നവർക്കുള്ള ഡാഷ്ബോർഡ്.",
+    "വിൽപ്പനക്കാരുടെ മുഴുവൻ നിയന്ത്രണ ഡാഷ്ബോർഡ്."
+  ],
+  bn: [
+    "গ্রাম মিত্রে আপনাকে স্বাগতম।",
+    "ব্যবহারকারীরা নিরাপদে লগইন করতে পারেন।",
+    "নতুন ব্যবহারকারীরা সাইন আপ করতে পারেন।",
+    "ক্রেতাদের ড্যাশবোর্ড।",
+    "বিক্রেতাদের সম্পূর্ণ নিয়ন্ত্রণ ড্যাশবোর্ড।"
+  ]
+};
+
+let i = 0;
+let lang = "en";
+const frame = document.getElementById("frame");
+const caption = document.getElementById("caption");
+
+function start(l) {
+  lang = l;
+  document.getElementById("langScreen").style.display = "none";
+  document.getElementById("viewer").style.display = "block";
+  play();
+}
+
+function play() {
+  if (i >= steps.length) return;
+
+  frame.src = steps[i].page;
+  caption.innerText = text[lang][i];
+  speak(text[lang][i]);
+
+  i++;
+  setTimeout(play, 7000);
+}
+
+function speak(msg) {
+  const u = new SpeechSynthesisUtterance(msg);
+  u.lang = {
+    en: "en-IN",
+    hi: "hi-IN",
+    te: "te-IN",
+    ml: "ml-IN",
+    bn: "bn-IN"
+  }[lang];
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+</script>
+
+</body>
+</html>
