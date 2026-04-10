@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramMitra</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Kalam:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Inter", system-ui, sans-serif;
+    min-height: 100vh;
+    background:
+      linear-gradient(
+        rgba(255,248,240,0.75),
+        rgba(255,248,240,0.75)
+      ),
+      url("https://pandabloggers.com/wp-content/uploads/Rural-eCommerce.webp");
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  /* HEADER / BRAND */
+  header {
+    padding: 26px;
+    text-align: center;
+  }
+
+  .brand {
+    font-size: 36px;
+    letter-spacing: 0.5px;
+  }
+
+  .brand-gram {
+    font-family: "Playfair Display", serif;
+    font-weight: 700;
+    color: #023436;
+  }
+
+  .brand-mitra {
+    font-family: "Kalam", cursive;
+    font-weight: 700;
+    font-size: 38px;
+    color: #2F9C95;
+    margin-left: 6px;
+  }
+
+  .container {
+    padding: 18px;
+    max-width: 520px;
+    margin: auto;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+  }
+
+  .title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #985F99;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #6b4a3a;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* BUTTONS */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    color: white;
+  }
+
+  /* Artisan - Orange / Clay */
+  .btn.artisan {
+    background: linear-gradient(135deg, #d2691e, #b8541a);
+  }
+
+  /* Buyer - Contrast tone */
+  .btn.buyer {
+    background: linear-gradient(135deg, #6f7c6b, #556157);
+  }
+
+  .btn.secondary {
+    background: #f2e6dc;
+    color: #4a2c1a;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d8c2b0;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  .price {
+    font-size: 17px;
+    font-weight: 600;
+    color: #b8541a;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-gram">Gram</span>
+    <span class="brand-mitra">मित्र</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ROLE SELECTION -->
+  <div id="roleScreen" class="card">
+    <div class="title">Welcome 🌾</div>
+    <div class="subtitle">
+      A trusted platform connecting artisans and buyers<br>
+      Choose how you want to use GramMitra
+    </div>
+
+    <button class="btn artisan" onclick="openArtisan()">🧑‍🎨 I am an Artisan</button>
+    <button class="btn buyer" onclick="openBuyer()">🛒 I want to Buy Products</button>
+  </div>
+
+  <!-- ARTISAN -->
+  <div id="artisanScreen" class="card hidden">
+    <div class="title">🧑‍🎨 Add Your Product</div>
+
+    <input id="a_name" placeholder="Product Name">
+    <input id="a_price" placeholder="Price">
+    <input id="a_seller" placeholder="Your Name">
+    <input type="file" id="a_image" accept="image/*" capture="environment">
+
+    <button class="btn artisan" onclick="addProduct()">Add Product</button>
+    <button class="btn secondary" onclick="goHome()">Back</button>
+  </div>
+
+  <!-- BUYER -->
+  <div id="buyerScreen" class="hidden"></div>
+
+</div>
+
+<script>
+  let products = [];
+
+  function hideAll() {
+    roleScreen.classList.add("hidden");
+    artisanScreen.classList.add("hidden");
+    buyerScreen.classList.add("hidden");
+  }
+
+  function openArtisan() {
+    hideAll();
+    artisanScreen.classList.remove("hidden");
+  }
+
+  function openBuyer() {
+    hideAll();
+    buyerScreen.classList.remove("hidden");
+    renderBuyer();
+  }
+
+  function goHome() {
+    hideAll();
+    roleScreen.classList.remove("hidden");
+  }
+
+  function addProduct() {
+    if (!a_name.value || !a_price.value || !a_seller.value || !a_image.files[0]) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      products.push({
+        name: a_name.value,
+        price: a_price.value,
+        seller: a_seller.value,
+        image: reader.result
+      });
+      alert("Product added successfully");
+      a_name.value = a_price.value = a_seller.value = "";
+      a_image.value = "";
+    };
+    reader.readAsDataURL(a_image.files[0]);
+  }
+
+  function renderBuyer() {
+    buyerScreen.innerHTML = `
+      <div class="card">
+        <div class="title">🛒 Available Products</div>
+      </div>
+    `;
+
+    if (products.length === 0) {
+      buyerScreen.innerHTML += `
+        <div class="card"><p>No products available yet.</p></div>`;
+    }
+
+    products.forEach(p => {
+      buyerScreen.innerHTML += `
+        <div class="card">
+          <img src="${p.image}">
+          <h3>${p.name}</h3>
+          <p>By ${p.seller}</p>
+          <div class="price">₹${p.price}</div>
+          <button class="btn buyer">Buy Now</button>
+        </div>
+      `;
+    });
+
+    buyerScreen.innerHTML += `<button class="btn secondary" onclick="goHome()">Back</button>`;
+  }
+</script>
+
+</body>
+</html>
