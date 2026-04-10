@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gram Mitra – Reviews & Ratings</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #f7efe8;
+}
+
+.container {
+  max-width: 700px;
+  margin: 30px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+h1 {
+  text-align: center;
+  color: #6b3f2a;
+}
+
+.avg-rating {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.stars span {
+  color: #ccc;
+}
+
+.stars span.active {
+  color: #f4b400;
+}
+
+input, textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: #c46a3a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.review {
+  background: #f2e6dc;
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.review .name {
+  font-weight: 600;
+  color: #4a2c1a;
+}
+
+.review .rating {
+  color: #f4b400;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>⭐ Reviews & Ratings</h1>
+
+  <div class="avg-rating" id="avgRating">Average Rating: 0 ⭐</div>
+
+  <!-- Rating Stars -->
+  <div class="stars" id="starBox">
+    <span data-val="1">★</span>
+    <span data-val="2">★</span>
+    <span data-val="3">★</span>
+    <span data-val="4">★</span>
+    <span data-val="5">★</span>
+  </div>
+
+  <!-- Review Form -->
+  <input id="name" placeholder="Your Name">
+  <input id="country" placeholder="Country">
+  <textarea id="reviewText" placeholder="Write your review..."></textarea>
+
+  <button onclick="submitReview()">Submit Review</button>
+
+  <!-- Reviews List -->
+  <div id="reviews"></div>
+</div>
+
+<script>
+let selectedRating = 0;
+const stars = document.querySelectorAll(".stars span");
+const reviewsDiv = document.getElementById("reviews");
+
+/* -------- Star Selection -------- */
+stars.forEach(star => {
+  star.onclick = () => {
+    selectedRating = star.dataset.val;
+    stars.forEach(s => s.classList.remove("active"));
+    for (let i = 0; i < selectedRating; i++) {
+      stars[i].classList.add("active");
+    }
+  };
+});
+
+/* -------- Load Reviews -------- */
+let reviews = JSON.parse(localStorage.getItem("grammitra_reviews")) || [];
+renderReviews();
+
+/* -------- Submit Review -------- */
+function submitReview() {
+  const name = document.getElementById("name").value.trim();
+  const country = document.getElementById("country").value.trim();
+  const text = document.getElementById("reviewText").value.trim();
+
+  if (!name || !country || !text || selectedRating == 0) {
+    alert("Please fill all fields and select rating.");
+    return;
+  }
+
+  const review = {
+    name,
+    country,
+    rating: selectedRating,
+    text
+  };
+
+  reviews.push(review);
+  localStorage.setItem("grammitra_reviews", JSON.stringify(reviews));
+
+  document.getElementById("name").value = "";
+  document.getElementById("country").value = "";
+  document.getElementById("reviewText").value = "";
+  selectedRating = 0;
+  stars.forEach(s => s.classList.remove("active"));
+
+  renderReviews();
+}
+
+/* -------- Render Reviews -------- */
+function renderReviews() {
+  reviewsDiv.innerHTML = "";
+  let total = 0;
+
+  reviews.forEach(r => {
+    total += Number(r.rating);
+    reviewsDiv.innerHTML += `
+      <div class="review">
+        <div class="name">${r.name} (${r.country})</div>
+        <div class="rating">${"★".repeat(r.rating)}</div>
+        <div>${r.text}</div>
+      </div>
+    `;
+  });
+
+  const avg = reviews.length ? (total / reviews.length).toFixed(1) : 0;
+  document.getElementById("avgRating").innerText = `Average Rating: ${avg} ⭐`;
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
