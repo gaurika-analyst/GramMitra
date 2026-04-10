@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gram Mitra – NGO Collaboration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #f7efe8;
+}
+
+.container {
+  max-width: 600px;
+  margin: 30px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+h1 {
+  text-align: center;
+  color: #6b3f2a;
+}
+
+input, select, textarea, button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+button {
+  background: #c46a3a;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.success {
+  margin-top: 15px;
+  padding: 12px;
+  background: #d4edda;
+  border-radius: 10px;
+  color: #155724;
+  font-weight: 500;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🤝 NGO Collaboration</h1>
+
+  <input type="text" id="ngoName" placeholder="NGO Name">
+  <input type="email" id="ngoEmail" placeholder="Email">
+  <input type="text" id="ngoCountry" placeholder="Country">
+
+  <select id="ngoType">
+    <option value="">Select Type of Collaboration</option>
+    <option value="training">Training & Skill Development</option>
+    <option value="funding">Funding & Grants</option>
+    <option value="awareness">Awareness & Campaigns</option>
+    <option value="partnership">Partnership & Networking</option>
+  </select>
+
+  <textarea id="ngoMessage" placeholder="Write your message here..." rows="4"></textarea>
+
+  <button onclick="submitForm()">Submit Collaboration Request</button>
+
+  <div id="successMsg" class="success" style="display:none;">✅ Your request has been submitted successfully!</div>
+</div>
+
+<script>
+function submitForm() {
+  const name = document.getElementById("ngoName").value.trim();
+  const email = document.getElementById("ngoEmail").value.trim();
+  const country = document.getElementById("ngoCountry").value.trim();
+  const type = document.getElementById("ngoType").value;
+  const message = document.getElementById("ngoMessage").value.trim();
+
+  if (!name || !email || !country || !type || !message) {
+    alert("Please fill all the fields.");
+    return;
+  }
+
+  // Save to localStorage (works without backend)
+  let collaborations = JSON.parse(localStorage.getItem("ngo_collaborations")) || [];
+  collaborations.push({name, email, country, type, message, date: new Date().toLocaleString()});
+  localStorage.setItem("ngo_collaborations", JSON.stringify(collaborations));
+
+  // Clear fields
+  document.getElementById("ngoName").value = "";
+  document.getElementById("ngoEmail").value = "";
+  document.getElementById("ngoCountry").value = "";
+  document.getElementById("ngoType").value = "";
+  document.getElementById("ngoMessage").value = "";
+
+  // Show success message
+  const successMsg = document.getElementById("successMsg");
+  successMsg.style.display = "block";
+  setTimeout(() => { successMsg.style.display = "none"; }, 4000);
+}
+</script>
+
+</body>
+</html>
